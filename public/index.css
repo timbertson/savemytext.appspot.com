@@ -66,27 +66,6 @@ a.fresh:visited { color: #25d }
 	text-align:center;
 }
 
-.toggleButton {
-	float:right;
-	color:#BBB;
-	cursor:pointer;
-	background: url('expando.png') center center no-repeat;
-	width: 18px;
-	height:18px;
-	position: relative;
-	left:10px;
-	opacity:0.7;
-}
-.toggleButton:hover { opacity:1.0; }
-
-#links h3{
-	background:#f0f0f0;
-	margin:0;
-	padding:0.2em;
-	font-size: 1.2em;
-	font-weight:normal;
-}
-
 ul {
 	margin:0; padding:0;
 }
@@ -110,19 +89,6 @@ form.unary {
 
 .right { float:right; }
 
-.url {
-/*	clear:left;*/
-	white-space:nowrap;
-	overflow:hidden;
-}
-
-#links .description {
-	margin:0.3em 0 0.1em;
-	padding: 0 1em;
-	color:#555;
-}
-
-
 .footer {
 	clear:both;
 	opacity:0.5;
@@ -133,96 +99,6 @@ form.unary {
 	margin-top:3em;
 	margin-bottom:2em;
 	text-align:center;
-}
-
-.page_messages {
-	font-size:0.8em;
-	margin:0.5em 0;
-	padding:0;
-	border: 2px solid #988;
-	opacity:0.7;
-}
-
-.page_messages li{
-	margin:0;
-	padding:2px;
-	list-style-type: none;
-	border-top: 1px solid #baa;
-}
-.page_messages li:first-child{
-	border-top:none
-}
-
-.page_messages .error{
-	background:#f9A;
-	color:#800;
-}
-.page_messages .info:before{
-	content: "info: "
-}
-
-.page_messages .error:before{
-	content: "ERROR: "
-}
-.page_messages .info{
-	background:#Fea;
-	color:#860;
-}
-
-.startHidden {
-	display:none;
-}
-.ui-dialog-content .startHidden {
-	display:inherit;
-}
-
-#sidebar {
-	text-align:left;
-	margin-bottom:0;
-}
-
-#sidebar * {
-	white-space: nowrap;
-}
-
-#sidebar li {
-	margin-top:0.5em;
-	display:inline-block;
-	padding:0.4em;
-	padding-bottom:0.2em;
-	border: 1px solid #999;
-	border-bottom:none;
-	margin-bottom:0;
-	background:#eee;
-	position:relative;
-	top:1px;
-	border-bottom:1px solid #DDDDDD;
-}
-
-#sidebar .active {
-	background:#fff;
-	color:#555;
-	border-bottom-color:#fff;
-}
-
-#sidebar .active a {
-	color:#555;
-}
-
-.pagination_container {
-	float:right;
-	margin-top:0.85em;
-}
-
-a.pagination { padding:0 6px; }
-a.pagination {
-	border-left:2px solid #eee;
-	padding-left:8px;
-}
-
-a.pagination:first-child {
-	border-left:none;
-	padding-left:6px;
 }
 
 input.title, textarea {

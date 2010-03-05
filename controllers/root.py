@@ -15,7 +15,6 @@ class MainHandler(BaseHandler):
 			'name': user.nickname(),
 			'texts': Text.find_all(user) or [Text.add(user)],
 		}
-		#raise RuntimeError(template_values['texts'])
 		info("template values: %r" % template_values)
 		
 		self.response.out.write(render_page('index', template_values))

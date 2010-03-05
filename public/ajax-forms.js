@@ -95,7 +95,8 @@ function ajaxify(base) {
 				var html = $(data, document);
 				markup(html);
 				$("input[type=text]", frm).val(''); // reset form values
-				if(method == "replace") {
+				if(method == "none") {
+				} else if(method == "replace") {
 					fadeRepace(target, html);
 				} else if(method == "remove") {
 					if(data.length > 0) {

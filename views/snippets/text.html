@@ -11,11 +11,13 @@
 	<form action="/text/" method="POST" class="save ajax" id="save_text_{{text.key|escape}}">
 		<input type="hidden" name="key" value="{{text.key|escape}}" />
 
-		<input type="text" class="title" name="title" value="{{text.title|escape}}"></input>
+		<input type="text" class="title" name="title" value="{{text.title|escape}}" />
 		<div class="toggleContainer">
-			<textarea name="content">{{ text.content|escape }}</textarea>
+			<textarea name="content">{{text.content|escape}}</textarea>
 		</div>
 		<input type="submit" value="save" class="right" />
 		<div style="clear:both;"></div>
+		<input type="hidden" name="dest" value="" />
+		<input type="hidden" name="meth" value="none" />
 	</form>
 </li>
