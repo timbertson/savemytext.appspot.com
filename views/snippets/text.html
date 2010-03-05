@@ -1,0 +1,21 @@
+<li>
+	<form action="/text/del/" method="POST" class="del ajax unary" id="delete_text_{{text.key|escape}}">
+		<input type="hidden" name="key" value="{{text.key|escape}}" />
+		<input type="submit" value="X" />
+
+		<!-- ajax properties -->
+		<input type="hidden" name="dest" value="li" />
+		<input type="hidden" name="meth" value="remove" />
+	</form>
+
+	<form action="/text/" method="POST" class="save ajax" id="save_text_{{text.key|escape}}">
+		<input type="hidden" name="key" value="{{text.key|escape}}" />
+
+		<input type="text" class="title" name="title" value="{{text.title|escape}}"></input>
+		<div class="toggleContainer">
+			<textarea name="content">{{ text.content|escape }}</textarea>
+		</div>
+		<input type="submit" value="save" class="right" />
+		<div style="clear:both;"></div>
+	</form>
+</li>
