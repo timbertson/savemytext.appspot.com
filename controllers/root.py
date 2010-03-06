@@ -15,7 +15,7 @@ class MainHandler(BaseHandler):
 			'name': user.nickname(),
 			'texts': Text.find_all(user) or [Text.add(user)],
 		}
-		info("template values: %r" % template_values)
+		#info("template values: %r" % template_values)
 		
 		self.response.out.write(render_page('index', template_values))
 

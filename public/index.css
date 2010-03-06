@@ -86,6 +86,9 @@ ul {
 	background:#e7e7e7;
 	padding:0.2em;
 	list-style-type:none;
+	-moz-border-radius: 3px;
+	border: 1px solid #d3d3d3;
+	margin-bottom:1em;
 }
 
 form.unary {
@@ -110,7 +113,7 @@ form.unary {
 }
 
 input.title, textarea {
-	background-color:#f8f8f8;
+	background-color:#f3f3f3;
 	border: 1px solid #bbb;
 	padding:0;
 	margin:0;

@@ -38,7 +38,6 @@ function markup(base) {
 
 function ajaxify(base) {
 	$("form.ajax", base).submit(function() {
-		alert("submitty!")
 		var frm = $(this);
 		var ajax_flag = function(){ return $("input[name=ajax]", frm); }
 		if(ajax_flag.length > 0) {
@@ -54,7 +53,7 @@ function ajaxify(base) {
 		if(target_sel[0] == '#'){
 			target = $(target_sel);
 		} else if (target_sel[0] == '.') {
-			target = frm.closest("form").find(target_sel);
+			target = $(target_sel, frm);
 		} else {
 			target = frm.closest(target_sel);
 		}
@@ -81,20 +80,7 @@ function ajaxify(base) {
 				if(method=='replace') {
 					fadeRepace(target);
 				}
-				dlg = $(xhr.responseText, document);
-				dlg.dialog({
-					modal:true,
-					draggable: false,
-					hide: 'slide',
-					// show: 'show', //FIXME: why doesn't this work?
-					title: 'Error:',
-					resizeable: true,
-					width:600,
-					height:'auto',
-					position:['center',50],
-					beforeclose: function(ev, ui) { debug("removing dialog..."); dlg.remove(); }, //FIXME: why so awkward?
-					dialogClass: 'dialog'
-				});
+				alert(xhr.responseText);
 			},
 			success: function(data, status) {
 				cleanup();
@@ -140,8 +126,11 @@ function ajaxify(base) {
 		};
 
 		var timeout_func = function() {
+			if(timeout == null) {
+				return;
+			}
 			timeout = null;
-			frm.submit();
+			$("input[type=submit]", frm).submit();
 		};
 
 		var modifieds = $(".monitor_changes", frm);

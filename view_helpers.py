@@ -4,6 +4,7 @@ from google.appengine.ext.webapp import template
 CONTENT = 'content'
 HEADER = 'header'
 LAYOUT = 'layout'
+SNIPPET = 'snippets'
 
 def view(*parts):
 	return path.join(path.dirname(__file__), 'views', *parts)
@@ -16,6 +17,9 @@ def render(*args):
 	values = args[-1]
 	content = template.render(template_path, values)
 	return content
+
+def render_snippet(name, values):
+	return template.render(view(SNIPPET, name + '.html'), values)
 
 def _render_if_exists(path_, values):
 	if path.exists(path_):

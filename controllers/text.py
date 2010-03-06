@@ -3,6 +3,7 @@ import cgi
 from base import *
 from models import Text
 from logging import debug, info
+from view_helpers import render_snippet
 
 class TextHandler(BaseHandler):
 	def key(self):
@@ -14,26 +15,26 @@ class TextHandler(BaseHandler):
 	def content(self):
 		return self._get_param('content')
 
-	def _add(self, user, title, content):
-		text = Text(user=self.user(), title=self.title(), content=self.content())
+	def _add(self, user):
+		text = Text.add(owner=user)
 		text.save()
-		return text.key()
-	
+		return text
+
 	def _update(self, user, title, content, key):
+		if not key:
+			info("adding new text")
+			return self._add(user)
 		info("updating text with key=%s, title=%s" % (key,title))
-		if key is None:
-			return self._add(user, title,content,key)
 		text = Text.find(user, key)
 		if text is None:
 			raise HttpError(404, "no such textarea to edit!")
 		text.content = content
 		text.title = title or ''
 		text.save()
-		info("updating text with key=%s, title=%s" % (key,title))
 		return text
 
 	def post(self):
-		text = self._update(self.user(), self.title(), self.content(), self._get_param('key',None))
+		text = self._update(self.user(), self.title(), self.content(), self._get_param('key',''))
 		self._render_success(text)
 	
 	def delete(self):
@@ -46,9 +47,10 @@ class TextHandler(BaseHandler):
 			raise HttpError(404, "could not find text")
 	
 	def _render_success(self, text = None):
+		info("ajax = %s" % (self.is_ajax()))
 		if self.is_ajax():
 			if text is not None:
-				self.response.out.write(text.key())
+				self.response.out.write(render_snippet('text', {'text':text}))
 		else:
 			info("REDIRECTING!")
 			self.redirect('/')

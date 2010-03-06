@@ -25,10 +25,7 @@ class Text(BaseModel):
 	
 	@classmethod
 	def find(cls, owner, key):
-		debug("owner = %s"% (owner,))
 		text = cls.get(key)
-		if text:
-			debug("text owner = %s"% (text.owner,))
 		if text and text.owner == owner:
 			return text
 

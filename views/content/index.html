@@ -1,4 +1,13 @@
-<h2>Your current texts:</h2>
+<h2>Your current texts:
+<form action="/text/" method="POST" class="new ajax unary" id="add_text">
+	<input type="submit" value="more!" />
+
+	<!-- ajax properties -->
+	<input type="hidden" name="dest" value="#texts" />
+	<input type="hidden" name="meth" value="before" />
+</form>
+</h2>
+
 <ul id="texts">
 	{% for text in texts %}
 		{% include "../snippets/text.html" %}
