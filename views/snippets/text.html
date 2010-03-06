@@ -8,16 +8,20 @@
 		<input type="hidden" name="meth" value="remove" />
 	</form>
 
-	<form action="/text/" method="POST" class="save ajax" id="save_text_{{text.key|escape}}">
+	<form action="/text/" method="POST" class="autosave ajax" id="save_text_{{text.key|escape}}">
 		<input type="hidden" name="key" value="{{text.key|escape}}" />
 
-		<input type="text" class="title" name="title" value="{{text.title|escape}}" />
+		<input type="text" class="title monitor_changes" name="title" value="{{text.title|escape}}" />
 		<div class="toggleContainer">
-			<textarea name="content">{{text.content|escape}}</textarea>
+			<textarea name="content" class="monitor_changes">{{text.content|escape}}</textarea>
 		</div>
-		<input type="submit" value="save" class="right" />
+		<div>
+			<input type="submit" value="save" class="right" />
+			<span class="status">saved.</span>
+		</div>
 		<div style="clear:both;"></div>
-		<input type="hidden" name="dest" value="" />
-		<input type="hidden" name="meth" value="none" />
+		<input type="hidden" name="dest" value=".status" />
+		<input type="hidden" name="meth" value="status" />
+		<input type="hidden" name="modified" value="false" />
 	</form>
 </li>

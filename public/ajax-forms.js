@@ -38,6 +38,7 @@ function markup(base) {
 
 function ajaxify(base) {
 	$("form.ajax", base).submit(function() {
+		alert("submitty!")
 		var frm = $(this);
 		var ajax_flag = function(){ return $("input[name=ajax]", frm); }
 		if(ajax_flag.length > 0) {
@@ -52,12 +53,18 @@ function ajaxify(base) {
 		var target;
 		if(target_sel[0] == '#'){
 			target = $(target_sel);
+		} else if (target_sel[0] == '.') {
+			target = frm.closest("form").find(target_sel);
 		} else {
 			target = frm.closest(target_sel);
 		}
 		if(target.length ==0) info("no target!");
 		if(method == "replace"){
 			target.animate({'opacity':fadeout_opacity, 'speed':transition_speed/2});
+		}
+
+		if(method == "status") {
+			$("input[name=modified]", frm).val("false");
 		}
 		
 		var cleanup = function() {
@@ -94,8 +101,10 @@ function ajaxify(base) {
 				debug("Success!");
 				var html = $(data, document);
 				markup(html);
-				$("input[type=text]", frm).val(''); // reset form values
-				if(method == "none") {
+				if(method == "status") {
+					if($("input[name=modified]", frm).val() == "false") {
+						target.text("saved.");
+					}
 				} else if(method == "replace") {
 					fadeRepace(target, html);
 				} else if(method == "remove") {
@@ -118,6 +127,34 @@ function ajaxify(base) {
 			},
 		});
 		return false; // stop propagation
+	});
+	
+	$("form.ajax.autosave", base).each(function() {
+		var frm = this;
+		var timeout = null;
+		var save_delay_time = 1000 * 30; //every 30 seconds after a change
+		var save_delay_time = 1000 * 3; //every 30 seconds after a change
+		var reset_timer = function() {
+			window.clearTimeout(timeout);
+			timeout = null;
+		};
+
+		var timeout_func = function() {
+			timeout = null;
+			frm.submit();
+		};
+
+		var modifieds = $(".monitor_changes", frm);
+		var change_func = function() {
+			if(timeout) {
+				reset_timer();
+			}
+			timeout = window.setTimeout(timeout_func, save_delay_time);
+			$(".status", frm).text("");
+			$("input[name=modified]", frm).val("true");
+		};
+		modifieds.change(change_func);
+		modifieds.keypress(change_func);
 	});
 }
 

@@ -20,13 +20,16 @@ class TextHandler(BaseHandler):
 		return text.key()
 	
 	def _update(self, user, title, content, key):
-		info("updating text with key: %s" % (key,))
+		info("updating text with key=%s, title=%s" % (key,title))
 		if key is None:
 			return self._add(user, title,content,key)
 		text = Text.find(user, key)
-		text.content = self.content()
-		text.title = self.title() or ''
+		if text is None:
+			raise HttpError(404, "no such textarea to edit!")
+		text.content = content
+		text.title = title or ''
 		text.save()
+		info("updating text with key=%s, title=%s" % (key,title))
 		return text
 
 	def post(self):
@@ -42,10 +45,12 @@ class TextHandler(BaseHandler):
 			info("could not find text" % (self.key(),))
 			raise HttpError(404, "could not find text")
 	
-	def _render_success(self, tex):
+	def _render_success(self, text = None):
 		if self.is_ajax():
-			self.response.out.write(tex.key())
+			if text is not None:
+				self.response.out.write(text.key())
 		else:
+			info("REDIRECTING!")
 			self.redirect('/')
 
 
