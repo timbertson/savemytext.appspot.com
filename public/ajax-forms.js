@@ -119,7 +119,6 @@ function ajaxify(base) {
 		var frm = this;
 		var timeout = null;
 		var save_delay_time = 1000 * 30; //every 30 seconds after a change
-		var save_delay_time = 1000 * 3; //every 30 seconds after a change
 		var reset_timer = function() {
 			window.clearTimeout(timeout);
 			timeout = null;
