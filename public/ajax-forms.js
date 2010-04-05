@@ -89,7 +89,9 @@ function ajaxify(base) {
 				markup(html);
 				if(method == "status") {
 					if($("input[name=modified]", frm).val() == "false") {
-						target.text("saved.");
+						target.fadeTo(0, 1);
+						target.text("saved");
+						target.delay(3000).fadeTo(1000, 0.3);
 					}
 				} else if(method == "replace") {
 					fadeRepace(target, html);
@@ -118,7 +120,7 @@ function ajaxify(base) {
 	$("form.ajax.autosave", base).each(function() {
 		var frm = this;
 		var timeout = null;
-		var save_delay_time = 1000 * 30; //every 30 seconds after a change
+		var save_delay_time = 1000 * 10; //every 10 seconds after a change
 		var reset_timer = function() {
 			window.clearTimeout(timeout);
 			timeout = null;
@@ -133,16 +135,34 @@ function ajaxify(base) {
 		};
 
 		var modifieds = $(".monitor_changes", frm);
-		var change_func = function() {
-			if(timeout) {
-				reset_timer();
-			}
-			timeout = window.setTimeout(timeout_func, save_delay_time);
-			$(".status", frm).text("");
-			$("input[name=modified]", frm).val("true");
+		var apply_watch = function() {
+			var check_delay_time = save_delay_time / 3;
+			var elem = $(this);
+			var value = elem.val();
+			var check = function() {
+				var new_value = elem.val();
+				if (value != new_value) {
+					value = new_value;
+					elem.change();
+				}
+				window.setTimeout(check, check_delay_time);
+			};
+			window.setTimeout(check, check_delay_time);
+
+			var change_func = function() {
+				if(timeout) {
+					reset_timer();
+				}
+				timeout = window.setTimeout(timeout_func, save_delay_time);
+				$(".status", frm).text("pending...");
+				$("input[name=modified]", frm).val("true");
+			};
+
+			elem.change(change_func);
+			elem.keypress(change_func);
 		};
-		modifieds.change(change_func);
-		modifieds.keypress(change_func);
+
+		modifieds.each(apply_watch);
 	});
 }
 
