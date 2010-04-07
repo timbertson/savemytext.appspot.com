@@ -50,7 +50,7 @@ class TextHandler(BaseHandler):
 		info("ajax = %s" % (self.is_ajax()))
 		if self.is_ajax():
 			if text is not None:
-				self.response.out.write(render_snippet('text', {'text':text}))
+				self.response.out.write(render_snippet('text', {'text':text, 'just_created':True}))
 		else:
 			info("REDIRECTING!")
 			self.redirect('/')

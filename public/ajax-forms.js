@@ -154,7 +154,7 @@ function ajaxify(base) {
 					reset_timer();
 				}
 				timeout = window.setTimeout(timeout_func, save_delay_time);
-				$(".status", frm).text("pending...");
+				$(".status", frm).text("pending...").fadeTo(1, 100);
 				$("input[name=modified]", frm).val("true");
 			};
 
@@ -175,14 +175,15 @@ function makeToggles(base) {
 			debug("no container for toggleContent!");
 			return;
 		}
-		if($(".toggleButton", container).length == 0){
+		var toggleButton = $(".toggleButton", container);
+		if(toggleButton.length == 0){
 			var toggleButton = $("<div class=\"toggleButton\"></div>", document);
 			container.prepend(toggleButton);
-			toggleButton.click(function() {
-				$(toggleSelector, container).slideToggle(transition_speed);
-				return false;
-			});
 		}
+		toggleButton.click(function() {
+			$(toggleSelector, container).slideToggle(transition_speed);
+			return false;
+		});
 	})
 }
 
