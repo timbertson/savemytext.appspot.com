@@ -8,7 +8,11 @@
 		<input type="hidden" name="meth" value="remove" />
 	</form>
 
-	<form action="/text/" method="POST" class="autosave ajax" id="save_text_{{text.key|escape}}">
+	<form action="/text/"
+			method="POST"
+			class="autosave ajax"
+			id="save_text_{{text.key|escape}}"
+			autocomplete="off">
 		<div class="toggleContainer">
 			<input type="hidden" name="key" value="{{text.key|escape}}" />
 			<input type="button" value="+" class="toggleButton" />
