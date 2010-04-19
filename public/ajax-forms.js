@@ -7,6 +7,8 @@ function stopThrob() { $(".throb").fadeOut(100); }
 
 var info;
 var debug;
+var PREVENT = {};
+
 if(typeof(console) != "undefined") {
 	// chrome doesn't like native code (i.e console.log) bound to
 	// JS variables - so we curry it manually:
@@ -32,12 +34,18 @@ function fadeRepace(elem, replacement) {
 function markup(base) {
 	// apply all unobtrusive JS to an element tree
 	if (!base) { base = document.body; }
+	makeConfirms(base);
 	ajaxify(base);
 	makeToggles(base);
 }
 
 function ajaxify(base) {
-	$("form.ajax", base).submit(function() {
+	$("form.ajax", base).submit(function(e) {
+		if(PREVENT[e]) {
+			// incredibly lame hand-rolled event-propagation,
+			// but I can find nothing better from jQuery
+			return false;
+		}
 		var frm = $(this);
 		var ajax_flag = function(){ return $("input[name=ajax]", frm); }
 		if(ajax_flag.length > 0) {
@@ -185,6 +193,16 @@ function makeToggles(base) {
 			return false;
 		});
 	})
+}
+
+function makeConfirms(base) {
+	$("input.confirm", base).each(function() {
+		$(this).closest('form').submit(function(e) {
+			PREVENT = {};
+			PREVENT[e] = !confirm("Really?");
+			return PREVENT[e];
+		});
+	});
 }
 
 document.write("<style> .startHidden { display: none; } </style>"); // hide toggleable content by default (but only if JS is enabled)

@@ -1,7 +1,7 @@
 <li>
 	<form action="/text/del/" method="POST" class="del ajax unary" id="delete_text_{{text.key|escape}}">
 		<input type="hidden" name="key" value="{{text.key|escape}}" />
-		<input type="submit" value="X" />
+		<input type="submit" class="confirm" value="X" />
 
 		<!-- ajax properties -->
 		<input type="hidden" name="dest" value="li" />
