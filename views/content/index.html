@@ -1,16 +1,38 @@
-<h2>Your current texts:
-<form action="/text/" method="POST" class="new ajax unary" id="add_text">
-	<input type="submit" value="more!" />
+<div ng:controller="Texts">
+	<h2>Your current texts:
+		<button type="submit" class="right" ng:click="add()">more!</button>
+	</h2>
+	<div class="clear"></div>
 
-	<!-- ajax properties -->
-	<input type="hidden" name="dest" value="#texts" />
-	<input type="hidden" name="meth" value="before" />
-</form>
-</h2>
+	<ul id="texts">
+		<div ng:hide="loaded">
+			loading...
+		</div>
+		<div ng:repeat="text in items">
+			<li ng:controller="TextController" class="text {{text.state()}}">
+				<form action="javascript:return saveAll()">
+					<div class="right">
+						<div class="throb" ng:hide="!text.inProgress">&nbsp;</div>
+						<button class="save" disabled="{{text.isClean()}}" ng:click="text.save()" class="save">save</button>
+						<button class="delete" ng:click="remove(text)" value="X">X</button>
+					</div>
+					<button ng:click="text.toggleExpanded(this)">+</button>
 
-<ul id="texts">
-	{% for text in texts %}
-		{% include "../snippets/text.html" %}
-	{% endfor %}
-</ul>
+					<input type="text" class="title" name="text.form.title"/>
+					<tc:expando show="text.form.expanded">
+						<div class="expand">
+						<!-- <div class="expand" ng:hide="!text.form.expanded"> -->
+							<textarea name="text.form.content" rows="{{text.rows()}}"></textarea>
+						</div>
+				</form>
+
+			</li>
+		</div>
+	</ul>
+
+	<div ng:hide="!debug">
+		<pre>{{items.length}} texts</pre>
+		<pre>texts.items={{ texts.items}}</pre>
+	</div>
+</div>
 

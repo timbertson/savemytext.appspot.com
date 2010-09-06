@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet type='text/xsl' href='interface.xsl'?>
+<interface uri="http://gfxmonk.net/dist/0install/savemytext.xml" xmlns="http://zero-install.sourceforge.net/2004/injector/interface">
+	<name>savemytext</name>
+	<summary>command-line interface to savemytext.appspot.com</summary>
+	<publish mode="featured" xmlns="http://gfxmonk.net/dist/0install"/>
+	<description>
+		Allows full management (add, remove, rename, edit) of
+		user texts stored on savemytext.appspot.com
+	</description>
+	<group main="savemytext/smt">
+		<requires interface="http://gfxmonk.net/dist/0install/appengine-auth.xml">
+			<environment insert="" mode="prepend" name="PYTHONPATH"/>
+		</requires>
+
+		<implementation id="sha1new=a53c419b37e97a59c69f3d46a1863d5ba6174e25" released="2010-09-05" version="0.1">
+		
+    <manifest-digest sha256="1b7b88463562f213208843e41ccbfcc0c1405274ecb179c002506932816b6fe6"/>
+    <archive href="http://gfxmonk.net/dist/0install/savemytext/savemytext-0.1.tgz" size="10887"/>
+  </implementation>
+
+		<implementation id="sha1new=6a2567d9edc1f6d54b408e3a23bc6e7ef5b4fee8" released="2010-09-05" version="0.1.1">
+    <manifest-digest sha256="6c96f823c479b80b566bba1e73727768ac79dd5e91ab62125d109410e0a000d6"/>
+    <archive href="http://gfxmonk.net/dist/0install/savemytext/savemytext-0.1.1.tgz" size="11073"/>
+  </implementation>
+	</group>
+</interface>

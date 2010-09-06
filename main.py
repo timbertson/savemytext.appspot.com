@@ -6,12 +6,14 @@ from google.appengine.ext import webapp
 from google.appengine.api import users
 
 from controllers import *
+from controllers import api
 
 application = webapp.WSGIApplication([
 		('/', MainHandler),
-		('/text/', TextHandler),
 		#('/logout/', LogoutHandler),
-		('/text/del/', TextDeleteHandler),
+		('/api/text/?', api.TextSetHandler),
+		#('/api/text/delete/(.*)', api.TextDeleteHandler),
+		('/api/text/(.*)', api.SpecificTextHandler),
 		], debug=True)
 
 def main():

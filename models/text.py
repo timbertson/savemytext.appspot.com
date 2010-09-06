@@ -7,6 +7,7 @@ class Text(BaseModel):
 	title = db.StringProperty(required=False)
 	content = db.TextProperty()
 	owner = db.UserProperty(required=True)
+	expanded = db.BooleanProperty(default=True)
 
 	def __init__(self, *a, **k):
 		super(type(self), self).__init__(**k)

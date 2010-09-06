@@ -2,3 +2,5 @@
 *~
 *.egg-info
 index.yaml
+.tags
+0inst

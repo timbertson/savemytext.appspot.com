@@ -17,16 +17,6 @@ form {
 	margin:0;
 }
 
-.throb {
-	display:none; /* gets shown on request by javascript */
-	position:fixed;
-	width:32px;
-	height:32px;
-	background: url("/public/throb.gif") no-repeat top right;
-	top:5px;
-	right:5px;
-}
-
 .status {
 	font-size:0.8em;
 	color:#a99;
@@ -78,15 +68,36 @@ ul {
 	margin:0; padding:0;
 }
 
-.content > ul > li {
+.content ul li {
 	margin:0.5em 0;
 	background:#e7e7e7;
 	padding:0.2em;
 	list-style-type:none;
-	-moz-border-radius: 3px;
-	border: 1px solid #d3d3d3;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 2px solid #d3d3d3;
 	margin-bottom:1em;
+	position:relative;
 }
+.content ul li.dirty, .content ul li.fresh {
+	border-color:#daa;
+	border-width:2px;
+}
+
+.content ul li.fresh {
+	border-color:#aca;
+}
+
+.throb {
+	position:relative;
+	width:16px;
+	height:16px;
+	float:left;
+	background: url("/public/throb.gif") no-repeat top right;
+	top:5px;
+	right:5px;
+}
+
 
 form.unary {
 	display:inline;
@@ -109,15 +120,13 @@ form.unary {
 	text-align:center;
 }
 
-input.title, textarea {
-	padding:0;
-	margin:0;
-	margin-bottom:2px;
-}
 input.title {
 	border:none;
 	background:none;
 	width:auto;
+	padding:0;
+	margin:0;
+	margin-bottom:2px;
 }
 
 input.title {
@@ -125,9 +134,22 @@ input.title {
 	width:20em;
 }
 
+button {
+	font-size: 0.9em;
+}
+
+h2 button {
+	font-size: 0.7em;
+}
+
 textarea {
+	margin-top: 3px;
 	background-color:#f3f3f3;
 	border: 1px solid #bbb;
 	width:100%;
-	height:20em;
+	clear:both;
+}
+
+.clear {
+	clear:both;
 }

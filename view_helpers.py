@@ -26,11 +26,11 @@ def _render_if_exists(path_, values):
 		return template.render(path_, values)
 	return ''
 
-def render_page(name, values, layout='standard.html', partial=False):
+def render_page(name, values, layout='standard.html', partial=False, content = None):
 	if partial:
 		return render(CONTENT, name + '.html', values)
 	header  = _render_if_exists(view(HEADER, name + '.html'), values)
-	content = _render_if_exists(view(CONTENT, name + '.html'), values)
+	content = content or _render_if_exists(view(CONTENT, name + '.html'), values)
 	layout_values = values.copy()
 	layout_values.update(dict(
 		title = values.get('title', None),
