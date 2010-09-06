@@ -23,5 +23,10 @@
     <manifest-digest sha256="6c96f823c479b80b566bba1e73727768ac79dd5e91ab62125d109410e0a000d6"/>
     <archive href="http://gfxmonk.net/dist/0install/savemytext/savemytext-0.1.1.tgz" size="11073"/>
   </implementation>
+
+		<implementation id="sha1new=ae449bcbff71ba51057db1140f1b956b0e2f1d34" released="2010-09-06" version="0.1.2">
+    <manifest-digest sha256="fe80497f1cb2df96f5d7b48b473fdd247fedc91b414eb0d07babc679b765ed1f"/>
+    <archive href="http://gfxmonk.net/dist/0install/savemytext/savemytext-0.1.2.tgz" size="11219"/>
+  </implementation>
 	</group>
 </interface>
