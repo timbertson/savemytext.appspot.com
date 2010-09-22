@@ -14,6 +14,7 @@ class MainHandler(BaseHandler):
 		
 		template_values = {
 			'name': user.nickname(),
+			'title': '{{texts.unreadMarker()}}'
 		}
 		expires_date = datetime.datetime.utcnow()
 		expires_str = expires_date.strftime("%d %b %Y %H:%M:%S GMT")

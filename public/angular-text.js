@@ -93,10 +93,12 @@ Text.prototype = {
 	},
 
 	state: function() {
+		var states = [];
 		if(!this.isPersisted()) {
-			return "fresh";
+			states.push("fresh");
 		}
-		return this.isClean() ? "clean" : "dirty";
+		states.push(this.isClean() ? "clean" : "dirty");
+		return states.join(" ");
 	}
 	
 }
@@ -110,7 +112,7 @@ function Texts()
 	this.loaded = false;
 	this.TextResource = TextResource = this.$resource(BASE + '/text/:key', {key: '@key'});
 
-	//TODO: remove onve this is fixed in either appengine or angular:
+	//TODO: remove once this is fixed in either appengine or angular:
 	this.TextResource.prototype.$do_remove = function() {
 		return TextResource.remove({key:this.key});
 	};
@@ -167,6 +169,19 @@ Texts.prototype = {
 		var resource = new this.TextResource(defaultText);
 		var new_text = new Text(resource);
 		this.items.unshift(new_text);
+	},
+	
+	unreadMarker: function() {
+		var count=0;
+		angular.foreach(this.items, function(item) {
+			if(!Text.prototype.isClean.call(item)) {
+				count += 1;
+			}
+		});
+		if(count > 0) {
+			return "* ";
+		}
+		return "";
 	}
 }
 
@@ -218,6 +233,7 @@ var confirmExit = function() {
 window.onbeforeunload = confirmExit;
 
 $(function() {
+	$("#ngtexts").show();
 	$(window).keypress(function(event) {
 		if (!(event.which == 19 && event.ctrlKey)) return true;
 		event.preventDefault();

@@ -8,7 +8,7 @@
 		<div ng:hide="loaded">
 			loading...
 		</div>
-		<div ng:repeat="text in items">
+		<div id="ngtexts" ng:repeat="text in items" style="display:none">
 			<li ng:controller="TextController" class="text {{text.state()}}">
 				<form action="javascript:return saveAll()">
 					<div class="right">
