@@ -17,7 +17,6 @@ function TextController()
 	this.$watch('text.form.content', this.ensureDelaySave);
 	this.$watch('text.form.expanded', this.ensureDelaySave);
 	this.$watch('text.form.title', this.ensureDelaySave);
-	this.$watch('text.resource.title', function() {this.$parent.sort(); });
 }
 
 TextController.prototype = {
@@ -149,19 +148,6 @@ Texts.prototype = {
 		}
 		angular.Array.remove(self.items, item);
 		self.ensureAtLeastOneText();
-	},
-
-	sort: function()
-	{
-		if(this.sorting) {
-			return;
-		}
-		this.sorting = true;
-		this.items = this.items.sort(function(a, b) {
-			return (a.resource.title < b.resource.title)?-1:(a.resource.title == b.resource.title)?0:1;
-		});
-		this.$root.$eval();
-		this.sorting = false;
 	},
 
 	add: function()
