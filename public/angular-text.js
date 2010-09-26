@@ -62,7 +62,7 @@ Text.prototype = {
 		lines = this.form.content.split(/\n/).length;
 		var rows = lines + 1;
 		if (rows < 4) return 4;
-		if (rows > 40) return 40;
+		if (rows > 20) return 20;
 		return rows;
 	},
 
