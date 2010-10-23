@@ -37,6 +37,12 @@ class TextHandler(BaseHandler):
 
 		if text is None:
 			raise HttpError(404, "no such textarea to edit!")
+		try:
+			logging.info("got old_content, checking for conflicts")
+			if doc['old_content'] != text.content:
+				raise HttpError(409, "existing content does not match datastore")
+		except KeyError:
+			logging.info("no old_content given - assuming no conflict")
 		text.content = doc['content']
 		text.title = doc['title']
 		text.expanded = doc.get('expanded', True)

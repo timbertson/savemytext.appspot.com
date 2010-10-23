@@ -78,8 +78,10 @@ Text.prototype = {
 		angular.copy(this.form, this.resource);
 		this.inProgress = true;
 		log.log("saving: " + this.form.title);
+		this.resource.old_content = this.master.content;
 		this.resource.$save(function(){
 			log.log("saved. " + self.form.title);
+			self.resource.old_content = null;
 			self.set_master(self.resource);
 			self.form.key = self.resource.key;
 			self.inProgress = false;
@@ -226,3 +228,22 @@ $(function() {
 		return saveAll();
 	});
 });
+
+
+
+
+// override $xhr.error to alert the user when a conflict occurs
+angular.service('$xhr.error', function(){
+	var rootScope = this;
+	return function(request, response) {
+		log.log("request failed! request:");
+		log.log(request);
+		log.log("... and response:");
+		if(response.status == 409 && request.method == 'POST') {
+			alert("Saving failed due to a conflict. Try refreshing your browser.");
+		} else {
+			throw("error: response failed with code " + response.status);
+		}
+	};
+});
+
