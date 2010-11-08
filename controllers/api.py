@@ -26,8 +26,6 @@ class TextHandler(BaseHandler):
 	def _update(self, key):
 		user = self.user()
 		doc = self._postdata()
-		import time
-		time.sleep(2)
 		if not key:
 			info("adding new text")
 			text = Text(owner=user)
