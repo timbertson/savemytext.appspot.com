@@ -29,6 +29,9 @@ class TextHandler(BaseHandler):
 		if not key:
 			info("adding new text")
 			text = Text(owner=user)
+			try:
+				del doc['old_content']
+			except KeyError: pass
 		else:
 			info("updating text with key=%r, title=%s" % (key,doc.get('title', None)))
 			text = Text.find(owner=user, key=key)
@@ -36,9 +39,9 @@ class TextHandler(BaseHandler):
 		if text is None:
 			raise HttpError(404, "no such textarea to edit!")
 		try:
-			logging.info("got old_content, checking for conflicts")
 			if doc['old_content'] != text.content:
 				raise HttpError(409, "existing content does not match datastore")
+			logging.info("old_content matched datastore")
 		except KeyError:
 			logging.info("no old_content given - assuming no conflict")
 		text.content = doc['content']
