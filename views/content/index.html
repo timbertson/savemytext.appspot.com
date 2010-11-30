@@ -8,7 +8,7 @@
 		<div ng:hide="loaded">
 			loading...
 		</div>
-		<div id="ngtexts" ng:repeat="text in items.$orderBy('resource.title')" style="display:none">
+		<div id="ngtexts" ng:repeat="text in items" style="display:none">
 			<li ng:controller="TextController" class="text {{text.state()}}">
 				<form action="javascript:return saveAll()">
 					<div class="right">
