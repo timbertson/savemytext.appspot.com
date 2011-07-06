@@ -10,7 +10,7 @@
 		</div>
 		<div id="ngtexts" ng:repeat="text in items" style="display:none">
 			<li ng:controller="TextController" class="text {{text.state()}}">
-				<form action="javascript:return saveAll()">
+				<form>
 					<div class="right">
 						<div class="throb" ng:hide="!text.inProgress">&nbsp;</div>
 						<button class="save" disabled="{{text.isClean()}}" ng:click="text.save()" class="save">save</button>
@@ -19,7 +19,7 @@
 					<button ng:click="text.toggleExpanded(this)">+</button>
 
 					<input type="text" class="title" name="text.form.title"/>
-					<tc:expando show="text.form.expanded">
+					<tc:expando show="text.form.expanded" identity="text.master.key">
 						<textarea name="text.form.content" rows="{{text.rows()}}"></textarea>
 					</tc:expando>
 				</form>

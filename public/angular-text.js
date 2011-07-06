@@ -34,8 +34,9 @@ TextController.prototype = {
 	}
 }
 
-function Text(resource)
+function Text(log, resource)
 {
+	this.log = log;
 	this.resource = resource;
 	this.form = angular.copy(this.resource);
 	this.set_master(this.form);
@@ -71,16 +72,16 @@ Text.prototype = {
 			return;
 		}
 		if(this.inProgress) {
-			log.log("invalid save!");
+			this.log.log("save already in progress...");
 			return;
 		}
 		var self = this;
 		angular.copy(this.form, this.resource);
 		this.inProgress = true;
-		log.log("saving: " + this.form.title);
+		this.log.log("saving: " + this.form.title);
 		this.resource.old_content = this.master.content;
 		this.resource.$save(function(){
-			log.log("saved. " + self.form.title);
+			self.log.log("saved. " + self.form.title);
 			self.resource.old_content = null;
 			self.set_master(self.resource);
 			self.form.key = self.resource.key;
@@ -106,12 +107,13 @@ Text.prototype = {
 
 // --------------------------
 
-function Texts()
+function Texts(log, $resource)
 {
 	this.debug = location.href.indexOf('verbose') != -1;
-	log = this.$log;
+	this.log = log;
 	this.loaded = false;
-	this.TextResource = TextResource = this.$resource(BASE + '/text/:key', {key: '@key'});
+	this.TextResource = TextResource = $resource(BASE + '/text/:key', {key: '@key'});
+	window.texts = this;
 
 	//TODO: remove once this is fixed in either appengine or angular:
 	this.TextResource.prototype.$do_remove = function() {
@@ -122,46 +124,60 @@ function Texts()
 	this.items = [];
 	this.TextResource.query(function(items) {
 		self.loaded = true;
-		angular.foreach(items, function(item) {
+		angular.forEach(items, function(item) {
 			if(angular.isDefined(item.key)) {
-				self.items.push(new Text(item));
+				self.items.push(self.new_text(item));
 			}
 		});
 		self.ensureAtLeastOneText();
 	});
 	this.$root.$set('texts', this);
+	var existingTitle = $("title");
+	var titleText = existingTitle.text();
+	var newTitle = angular.element('<title>{{texts.unreadMarker()}}' + titleText + '</title>');
+	var linker = angular.compile(newTitle);
+	linker(this.$root, function(elem, scope) {
+		existingTitle.replaceWith(elem);
+	});
 }
+
+Texts.$inject = ['$log', '$resource'];
 
 Texts.prototype = {
 	ensureAtLeastOneText: function() {
 		if(!this.loaded) return;
 		if(this.items.length == 0) {
-			log.log("ensuring at least one item");
+			this.log.log("ensuring at least one item");
 			this.add();
 		}
 	},
 
+	new_text: function(item) {
+		return new Text(this.log, item);
+	},
+
 	remove: function(item) {
 		if (!confirm("really remove?")) return;
-		log.log("dead: " + item);
+		this.log.log("dead: " + item);
 		var self = this;
 		if (item.isPersisted()) {
 			item.resource.$do_remove();
 		}
 		angular.Array.remove(self.items, item);
+		this.log.log(self.ensureAtLeastOneText);
 		self.ensureAtLeastOneText();
 	},
 
 	add: function()
 	{
 		var resource = new this.TextResource(defaultText);
-		var new_text = new Text(resource);
+		var new_text = this.new_text(resource);
 		this.items.unshift(new_text);
 	},
 	
 	unreadMarker: function() {
 		var count=0;
-		angular.foreach(this.items, function(item) {
+		angular.forEach(this.items, function(item) {
 			if(!Text.prototype.isClean.call(item)) {
 				count += 1;
 			}
@@ -176,20 +192,36 @@ Texts.prototype = {
 // -------------------------------
 
 
-angular.widget('tc:expando', function(element){
-	element.css('display', 'block');
-	this.descend(true);
-	return function(element) {
-		if(!this.$eval(element.attr('show'))) {
-			element.hide();
-		}
-		var watch = element.attr('show');
-		this.$watch(watch, function(value){
-			if (value) {
-				element.delay(0).slideDown();
+angular.widget('tc:expando', function(compileElement){
+	var compiler = this;
+	compileElement.css('display', 'block');
+	compiler.descend(true);
+	var watch_expr = compileElement.attr('show');
+	var identity_expr = compileElement.attr('identity');
+
+	var setWithAnimation = function(doAnimate, elem, value) {
+		if(!doAnimate) {
+			if(!value) {
+				elem.hide();
 			} else {
-				element.slideUp();
+				elem.show();
 			}
+		} else {
+			if (value) {
+				elem.delay(0).slideDown();
+			} else {
+				elem.slideUp();
+			}
+		}
+	}
+	return function(linkElement) {
+		var currentScope = this;
+		setWithAnimation(false, linkElement, currentScope.$eval(watch_expr));
+		currentScope.$watch(watch_expr, function(value){
+			var model_id = currentScope.$eval(identity_expr);
+			var sameElement = linkElement.data("model_id") == model_id;
+			setWithAnimation(sameElement, linkElement, value);
+			linkElement.data("model_id", model_id);
 		});
 	};
 });
@@ -225,7 +257,11 @@ $(function() {
 	$(window).keypress(function(event) {
 		if (!(event.which == 19 && event.ctrlKey)) return true;
 		event.preventDefault();
-		return saveAll();
+		saveAll();
+	});
+	$("#ngtexts form").live('submit', function(event) {
+		event.preventDefault();
+		saveAll();
 	});
 });
 
@@ -233,7 +269,7 @@ $(function() {
 
 
 // override $xhr.error to alert the user when a conflict occurs
-angular.service('$xhr.error', function(){
+angular.service('$xhr.error', function(log){
 	var rootScope = this;
 	return function(request, response) {
 		log.log("request failed! request:");
@@ -245,5 +281,5 @@ angular.service('$xhr.error', function(){
 			throw("error: response failed with code " + response.status);
 		}
 	};
-});
+}, {$inject: ['$log']});
 
