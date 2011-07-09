@@ -1,31 +1,38 @@
 <div ng:controller="Texts">
 	<h2>Your current texts:
-		<button type="submit" class="right" ng:click="add()">more!</button>
+		<button type="submit" class="right more" ng:click="add()">more!</button>
 	</h2>
 	<div class="clear"></div>
+
 
 	<ul id="texts">
 		<div ng:hide="loaded">
 			loading...
 		</div>
-		<div id="ngtexts" ng:repeat="text in items" style="display:none">
-			<li ng:controller="TextController" class="text {{text.state()}}">
-				<form>
-					<div class="right">
-						<div class="throb" ng:hide="!text.inProgress">&nbsp;</div>
-						<button class="save" disabled="{{text.isClean()}}" ng:click="text.save()" class="save">save</button>
-						<button class="delete" ng:click="remove(text)" value="X">X</button>
-					</div>
-					<button ng:click="text.toggleExpanded(this)">+</button>
+		<div id="ngtexts" style="display:none">
+			<div ng:repeat="text in items">
+				<li ng:controller="TextController" class="text {{text.state()}}">
+					<form>
+						<div class="right">
+							<div class="throb" ng:hide="!text.inProgress">&nbsp;</div>
+							<button class="save" disabled="{{text.isClean()}}" ng:click="text.save()" class="save">save</button>
+							<button class="delete glyph" ng:click="remove(text)">&#x2716;</button>
+						</div>
+						<button class="collapse glyph" ng:click="text.toggleExpanded(this)" ng:show="text.form.expanded">&#x25BE;</button>
+						<button class="collapse glyph" ng:click="text.toggleExpanded(this)" ng:hide="text.form.expanded">&#x25B8;</button>
 
-					<input type="text" class="title" name="text.form.title"/>
-					<tc:expando show="text.form.expanded" identity="text.master.key">
-						<textarea name="text.form.content" rows="{{text.rows()}}"></textarea>
-					</tc:expando>
-				</form>
-
-			</li>
-		</div>
+						<input type="text" class="title" name="text.form.title"/>
+						<tc:expando show="text.form.expanded" identity="text.master.key">
+							<textarea name="text.form.content" rows="{{text.rows()}}"></textarea>
+						</tc:expando>
+					</form>
+				</li>
+			</div>
+			<div class="undo" ng:show="undo_action()">
+				{{undo_action().description}} -
+				<a id="undo" ng:click="undo()">undo?</a>&nbsp;&nbsp;<button class="delete glyph" ng:click="clear_undo()">&#x2716;</button>
+			</div>
+		</div> <!-- ngtexts -->
 	</ul>
 
 	<div ng:hide="!debug">

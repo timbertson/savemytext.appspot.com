@@ -11,18 +11,21 @@ var log;
 
 // --------------------------------
 
-function TextController()
+function TextController(log)
 {
-	var self = this;
+	this.log = log;
 	this.$watch('text.form.content', this.ensureDelaySave);
 	this.$watch('text.form.expanded', this.ensureDelaySave);
 	this.$watch('text.form.title', this.ensureDelaySave);
 }
+TextController.$inject = ['$log'];
 
 TextController.prototype = {
 	ensureDelaySave: function() {
 		var text = this.text;
+		this.log.log("delaySave trigger on " + text.form.title);
 		if(text.delaySave) {
+			this.log.log("(replacing)");
 			window.clearTimeout(text.delaySave);
 		}
 		var self = this;
@@ -39,7 +42,11 @@ function Text(log, resource)
 	this.log = log;
 	this.resource = resource;
 	this.form = angular.copy(this.resource);
-	this.set_master(this.form);
+	if(this.isPersisted()) {
+		this.set_master(this.form);
+	} else {
+		this.set_master(defaultText);
+	}
 	var self = this;
 
 	this.delaySave = null;
@@ -67,8 +74,22 @@ Text.prototype = {
 		return rows;
 	},
 
+	isDeleted: function() {
+		return this.master == null;
+	},
+
+	markDeleted: function() {
+		this.master = null;
+	},
+
 	save: function() {
+		this.log.log("saving: \"" + this.form.title + "\"");
+		if(this.isDeleted()) {
+			this.log.log("not saving deleted item");
+			return;
+		}
 		if(this.isClean()) {
+			this.log.log("not saving clean text.");
 			return;
 		}
 		if(this.inProgress) {
@@ -76,10 +97,10 @@ Text.prototype = {
 			return;
 		}
 		var self = this;
-		angular.copy(this.form, this.resource);
 		this.inProgress = true;
-		this.log.log("saving: " + this.form.title);
+		angular.copy(this.form, this.resource);
 		this.resource.old_content = this.master.content;
+		this.log.log("sending request, form = " + JSON.stringify(this.form));
 		this.resource.$save(function(){
 			self.log.log("saved. " + self.form.title);
 			self.resource.old_content = null;
@@ -105,6 +126,11 @@ Text.prototype = {
 	
 }
 
+function Action(description, undo) {
+	this.undo = undo;
+	this.description = description;
+};
+
 // --------------------------
 
 function Texts(log, $resource)
@@ -113,6 +139,7 @@ function Texts(log, $resource)
 	this.log = log;
 	this.loaded = false;
 	this.TextResource = TextResource = $resource(BASE + '/text/:key', {key: '@key'});
+	this.undo_actions = [];
 	window.texts = this;
 
 	//TODO: remove once this is fixed in either appengine or angular:
@@ -157,20 +184,25 @@ Texts.prototype = {
 	},
 
 	remove: function(item) {
-		if (!confirm("really remove?")) return;
-		this.log.log("dead: " + item);
+		this.log.log("removing: " + item.form.title);
 		var self = this;
 		if (item.isPersisted()) {
 			item.resource.$do_remove();
 		}
+		item.markDeleted();
 		angular.Array.remove(self.items, item);
-		this.log.log(self.ensureAtLeastOneText);
+		var self = this;
+		this.add_undo(new Action("removed: " + item.form.title, function() {
+			self.add(item.form);
+		}));
 		self.ensureAtLeastOneText();
 	},
 
-	add: function()
+	add: function(text)
 	{
-		var resource = new this.TextResource(defaultText);
+		text = text || defaultText;
+		text.key = null;
+		var resource = new this.TextResource(text);
 		var new_text = this.new_text(resource);
 		this.items.unshift(new_text);
 	},
@@ -186,6 +218,25 @@ Texts.prototype = {
 			return "* ";
 		}
 		return "";
+	},
+
+	undo_action: function() {
+		return this.undo_actions[0];
+	},
+	undo: function() {
+		var undo_action = this.undo_actions.shift();
+		undo_action.undo();
+	},
+	add_undo: function(action) {
+		var self = this;
+		this.undo_actions.push(action);
+		window.setTimeout(function() {
+			angular.Array.remove(self.undo_actions, action);
+			self.$eval();
+		}, 5000);
+	},
+	clear_undo: function() {
+		this.undo_actions = [];
 	}
 }
 
